@@ -1,0 +1,48 @@
+# Note: 192.168.4.xxx is the eero Pro 6 network.
+
+version: '2'
+
+services:
+  pihole:
+    container_name: pihole
+    image: pihole/pihole:latest
+    hostname: pihole
+    domainname: my.network            # <-- Update
+    mac_address: d0:ca:ab:cd:ef:01
+    cap_add:
+      - NET_ADMIN
+    networks:
+      pihole_network:
+        ipv4_address: 192.168.4.241   # <-- Update
+    dns:
+      - 127.0.0.1
+      - 1.1.1.3
+      - 1.0.0.3
+    ports:
+      - 443/tcp
+      - 53/tcp
+      - 53/udp
+      - 67/udp
+      - 80/tcp
+    environment:
+      ServerIP: 192.168.4.241           # <-- Update (match ipv4_address)
+      VIRTUAL_HOST: pihole.my.network   # <-- Update (match hostname + domainname)
+      WEBPASSWORD: "tZCsCg6D"           # <-- Add password (if required)
+      DNS1: 1.1.1.3
+      DNS2: 1.0.0.3
+    volumes:
+      - /volume1/docker/pihole/dnsmasq.d:/etc/dnsmasq.d
+      - /volume1/docker/pihole/pihole:/etc/pihole
+      - /volume1/docker/pihole/log:/var/log
+    restart: unless-stopped
+
+networks:
+  pihole_network:
+    driver: macvlan
+    driver_opts:
+      parent: bond0                         # changed from ovs_eth0
+    ipam:
+      config:
+        - subnet: 192.168.4.0/24            # <-- Update
+          gateway: 192.168.4.1              # <-- Update
+          ip_range: 192.168.4.255/28        # <-- Update - 192.168.4.241 to 192.168.4.254
