@@ -1,0 +1,42 @@
+import json
+import logging
+import os
+from pathlib import Path
+
+
+logger = logging.getLogger(__name__)
+
+
+class Config:
+
+    def __init__(self) -> None:
+        # Load config from secrets, if possible.
+        try:
+            self._secret_conf = json.loads(Path('/run/secrets/conf').read())
+            logger.info('Using config from secrets or environment.')
+        except Exception:
+            self._secret_conf = {}
+            logger.info('Using config from environment only.')
+
+        # Pi-Hole settings
+        self.FTL_DB_FILE = self._get('FTL_DB_FILE')
+
+        # Mail settings
+        self.SMTP_HOST = self._get('SMTP_HOST')
+        self.SMTP_PORT = self._get('SMTP_PORT')  # defaults to 465
+        self.SMTP_USERNAME = self._get('SMTP_USERNAME')
+        self.SMTP_PASSWORD = self._get('SMTP_PASSWORD')
+        self.MAIL_SENDER = self._get('MAIL_SENDER')  # may be ignored by SMTP server
+        self.MAIL_RECIPIENTS = self._get('MAIL_RECIPIENTS')
+
+        # Don't send notifications for blocked domain listed here.
+        _raw = self._get('WHITELIST')
+        self.WHITELIST = _raw.split(',') if _raw else []
+
+    def _get(self, key):
+        """Get a config value.
+
+        Tries to get the value from a secret file, otherwise from an environment
+        variable. See https://docs.docker.com/compose/compose-file/#secrets
+        """
+        return self._secret_conf.get(key, os.getenv(key))
