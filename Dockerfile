@@ -12,7 +12,4 @@ RUN pip install --user smtplib
 
 COPY . .
 
-# Install the app itself.
-RUN /home/appuser/.local/bin/poetry install --no-dev -v
-
-CMD ["/home/appuser/.local/bin/poetry", "run", "python", "-m", "dnsreport"]
+CMD ["python3", "main.py"]
