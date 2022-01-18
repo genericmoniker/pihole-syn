@@ -38,8 +38,11 @@ services:
   notifier:
     container_name: pihole-notifier
     build: .
+    volumes:
+      - /volume1/documents/docker/pihole/volumes/pihole:/etc/pihole:Z
     secrets:
         - notifier_config
+    restart: unless-stopped
 
 
 secrets:
