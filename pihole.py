@@ -45,6 +45,7 @@ def monitor(config, block_callback):
         try:
             block_rows = _query_for_block_rows(db_path)
             if block_rows:
+                # TODO: handle config.WHITELIST
                 block_callback(config, (Entry(*row) for row in block_rows))
         except Exception:
             logger.exception("Error in monitor loop.")
@@ -55,7 +56,6 @@ def _query_for_block_rows(db_path):
         with contextlib.closing(conn.cursor()) as cursor:
             cursor.execute(LATEST_ENTRY_QUERY)
             id_pos = cursor.fetchone()[0]
-            print(id_pos)
             time.sleep(POLL_INTERVAL_SECONDS)
             cursor.execute(POLL_QUERY, (id_pos,))
             return cursor.fetchall()
