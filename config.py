@@ -12,11 +12,15 @@ class Config:
     def __init__(self) -> None:
         # Load config from secrets, if possible.
         try:
-            self._secret_conf = json.loads(Path('/run/secrets/conf').read())
+            # The secret file is mounted in /run/secrets named after the secret
+            # name (notifier_config), not the original name of the file
+            # (notifier_config.json).
+            secret_file = Path('/run/secrets/notifier_config')
+            self._secret_conf = json.loads(secret_file.read_text())
             logger.info('Using config from secrets or environment.')
-        except Exception:
+        except Exception as ex:
             self._secret_conf = {}
-            logger.info('Using config from environment only.')
+            logger.info('Using config from environment only. %s', ex)
 
         # Pi-Hole settings
         self.FTL_DB_FILE = self._get('FTL_DB_FILE')
