@@ -5,11 +5,16 @@ FROM python:3.9-slim-bullseye
 
 RUN useradd --create-home appuser
 WORKDIR /home/appuser
+
+RUN export DEBIAN_FRONTEND=noninteractive && \
+  apt-get update && \
+  apt-get -y upgrade && \
+  apt-get install -y --no-install-recommends tini && \
+  apt-get -y clean && \
+  rm -rf /var/lib/apt/lists/*
+
 USER appuser
+COPY --chown=appuser . .
 
-RUN pip install --user --upgrade pip
-RUN pip install --user smtplib
-
-COPY . .
-
-CMD ["python3", "main.py"]
+ENTRYPOINT ["tini", "--", "python3", "main.py"]
+# To debug the container: ENTRYPOINT ["tail", "-f", "/dev/null"]
