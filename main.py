@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 def main():
-    log.setup_logging()
+    log.setup_logging(level=logging.INFO)
     logger.info("===== Pi-Hole Notifier Startup =====")
 
     conf = config.Config()

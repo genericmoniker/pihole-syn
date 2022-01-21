@@ -43,10 +43,13 @@ def _render_message_body(entries):
     print("DNS lookup(s) blocked by upstream sever:", file=buffer)
     print(file=buffer)
     for entry in entries:
+        logger.debug("Entry: %s", entry)
         request_time = datetime.datetime.fromtimestamp(entry.timestamp)
         print("-", request_time, entry.domain, f"(from {entry.client})", file=buffer)
     print(file=buffer, flush=True)
-    return buffer.getvalue()
+    body = buffer.getvalue()
+    logger.debug("Message: %s", body)
+    return body
 
 
 if __name__ == "__main__":

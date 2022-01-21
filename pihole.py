@@ -46,7 +46,9 @@ def monitor(config, block_callback):
             block_rows = _query_for_block_rows(db_path)
             if block_rows:
                 # TODO: handle config.WHITELIST
-                block_callback(config, (Entry(*row) for row in block_rows))
+                entries = [Entry(*row) for row in block_rows]
+                logger.debug("Entries: %s", entries)
+                block_callback(config, entries)
         except Exception:
             logger.exception("Error in monitor loop.")
 
