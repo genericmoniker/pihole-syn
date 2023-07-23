@@ -26,7 +26,7 @@ with a notifier_config.json file something like this:
 ```
 
 For Pi-Hole itself, the compose file references secrets/pihole.env, so you can
-pu the WEBPASSWORD environment variable in there.
+put the WEBPASSWORD environment variable in there.
 
 ## Running or updating
 
