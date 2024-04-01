@@ -1,3 +1,5 @@
+"""Interface with Pi-Hole for monitoring blocked queries."""
+
 import collections
 import contextlib
 import logging
@@ -28,10 +30,18 @@ logger = logging.getLogger(__name__)
 
 
 class MonitorConfigError(Exception):
-    pass
+    """Raised when there is an error in the monitor configuration."""
 
 
 def monitor(config, block_callback):
+    """Monitor the Pi-Hole FTL database for blocked queries.
+
+    Args:
+        config (config.Config): The application configuration.
+        block_callback (callable): A callback to invoke when a blocked query is
+            detected. The callback should accept the configuration and a list of
+            `Entry` named tuples.
+    """
     if not config.FTL_DB_FILE:
         raise MonitorConfigError("FTL_DB_FILE config value not set.")
 

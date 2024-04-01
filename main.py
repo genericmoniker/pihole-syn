@@ -1,3 +1,4 @@
+"""Main entry point for the Pi-Hole Notifier application."""
 import logging
 import sys
 

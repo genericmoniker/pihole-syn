@@ -1,3 +1,5 @@
+"""Send notifications for blocked DNS lookups."""
+
 import datetime
 import io
 import logging
@@ -10,6 +12,8 @@ logger = logging.getLogger(__name__)
 
 
 def notify(config, entries):
+    """Send a notification for each blocked domain."""
+
     for entry in entries:
         request_time = datetime.datetime.fromtimestamp(entry.timestamp)
         logger.info(
@@ -52,6 +56,7 @@ def _render_message_body(entries):
     return body
 
 
+# Entry point for testing notifications without running the main application:
 if __name__ == "__main__":
     from config import Config
     from pihole import Entry
