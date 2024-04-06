@@ -42,6 +42,10 @@ class Config:
         _raw = self._get("WHITELIST")
         self.WHITELIST = _raw.split(",") if _raw else []
 
+        # Domain category lookup settings.
+        self.CLOUDFLARE_API_KEY = self._get("CLOUDFLARE_API_KEY")
+        self.CLOUDFLARE_ACCOUNT_ID = self._get("CLOUDFLARE_ACCOUNT_ID")
+
     def _get(self, key):
         """Get a config value.
 

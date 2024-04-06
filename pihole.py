@@ -1,7 +1,7 @@
 """Interface with Pi-Hole for monitoring blocked queries."""
 
-import collections
 import contextlib
+from dataclasses import dataclass, field
 import logging
 import pathlib
 import sqlite3
@@ -23,8 +23,16 @@ LATEST_ENTRY_QUERY = """
     LIMIT 1;
 """
 
-# Fields here should match those selected in the POLL_QUERY.
-Entry = collections.namedtuple("Entry", "id timestamp status domain client")
+# Required fields here should match those selected in the POLL_QUERY.
+@dataclass
+class Entry:
+    id: int
+    timestamp: int
+    status: int
+    domain: str
+    client: str
+    categories: list[str] = field(default_factory=list)
+
 
 logger = logging.getLogger(__name__)
 
